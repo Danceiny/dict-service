@@ -10,7 +10,6 @@ var AreaServiceImplCpt *AreaServiceImpl
 
 func init() {
     AreaServiceImplCpt = &AreaServiceImpl{
-        TreeSe
         BaseCacheServiceImplCpt}
 }
 
