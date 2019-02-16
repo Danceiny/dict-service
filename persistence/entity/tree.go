@@ -2,7 +2,6 @@ package entity
 
 import (
 	. "github.com/Danceiny/dict-service/common"
-	. "github.com/Danceiny/dict-service/common/FastJson"
 )
 
 type TreeEntityIfc interface {

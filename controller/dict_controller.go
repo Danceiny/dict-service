@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/Danceiny/dict-service/common"
 	. "github.com/Danceiny/dict-service/service"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -53,7 +54,7 @@ func (handler *DictHandler) GetArea(c *gin.Context) {
 		log.Warning("id is not integer")
 	}
 	// 调用并响应
-	handler.respond(c, AreaServiceImplCpt.GetArea(id))
+	handler.respond(c, AreaServiceImplCpt.GetArea(common.NodeId(id), 0, 0))
 }
 
 //

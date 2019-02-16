@@ -2,7 +2,7 @@ package entity
 
 import (
 	. "github.com/Danceiny/dict-service/common"
-	. "github.com/Danceiny/dict-service/common/FastJson"
+	"github.com/Danceiny/go.fastjson"
 )
 
 type BaseEntity struct {
@@ -10,16 +10,16 @@ type BaseEntity struct {
 	CreatedTime int64  `gorm:"column:created_time" json:"createdTime"`
 	UpdatedTime int64  `gorm:"column:modified_time" json:"modifiedTime"`
 	// 不叫DeletedAt，避开gorm的软删除
-	DeletedTime int64       `gorm:"column:deleted_time" json:"deletedTime"`
-	Attr        *JsonObject `gorm:"-" json:"attr"`
+	DeletedTime int64                `gorm:"column:deleted_time" json:"deletedTime"`
+	Attr        *fastjson.JSONObject `gorm:"-" json:"attr"`
 }
 
-func (entity *BaseEntity) GetAttr() *JsonObject {
+func (entity *BaseEntity) GetAttr() *fastjson.JSONObject {
 	return entity.Attr
 }
 
 func (entity *BaseEntity) SetAttr(bytes []byte) {
-	o := Parse(bytes)
+	o := fastjson.Parse(bytes)
 	entity.Attr = &o
 }
 
@@ -52,7 +52,7 @@ func (entity *BaseEntity) SetUpdatedTime(t int64) {
 
 type EntityIfc interface {
 	GetBid() BID
-	GetAttr() *JsonObject
+	GetAttr() *fastjson.JSONObject
 	SetAttr(bytes []byte)
 	GetType() DictTypeEnum
 	IsEmpty() bool

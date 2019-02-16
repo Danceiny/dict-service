@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	"github.com/Danceiny/dict-service/common/FastJson"
+	"github.com/Danceiny/go.fastjson"
 	"time"
 )
 
@@ -32,9 +32,9 @@ type BaseCacheServiceImpl struct {
 func (impl *BaseCacheServiceImpl) CacheEntity(t DictTypeEnum, entity EntityIfc, simple bool) {
 	var id = entity.GetBid()
 	if t.UseHashCache() {
-		impl.redis.HSet(impl.GetTableKey(t), id.String(), FastJson.ToJSON(entity))
+		impl.redis.HSet(impl.GetTableKey(t), id.String(), fastjson.ToJSON(entity))
 	} else {
-		impl.redis.Set(impl.GetEntityKey(t, id, simple), FastJson.ToJSON(entity), ENTITY_CACHE_EXPIRATION)
+		impl.redis.Set(impl.GetEntityKey(t, id, simple), fastjson.ToJSON(entity), ENTITY_CACHE_EXPIRATION)
 	}
 
 }
@@ -46,12 +46,12 @@ func (impl *BaseCacheServiceImpl) MultiCacheEntity(t DictTypeEnum, entities []En
 	var m = make(map[string]interface{})
 	if t.UseHashCache() {
 		for _, entity := range entities {
-			m[entity.GetBid().String()] = FastJson.ToJSON(entity)
+			m[entity.GetBid().String()] = fastjson.ToJSON(entity)
 		}
 		impl.redis.HMSet(impl.GetTableKey(t), m)
 	} else {
 		for _, entity := range entities {
-			m[impl.GetEntityKey(t, entity.GetBid(), simple)] = FastJson.ToJSON(entity)
+			m[impl.GetEntityKey(t, entity.GetBid(), simple)] = fastjson.ToJSON(entity)
 		}
 		impl.redis.MSet(m)
 	}

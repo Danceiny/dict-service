@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/Danceiny/dict-service/common/FastJson"
+	"github.com/Danceiny/go.fastjson"
 )
 
 type FlatVO interface {
-	ToFlatVO() *FastJson.JsonObject
+	ToFlatVO() *fastjson.JSONObject
 }
