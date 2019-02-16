@@ -1,14 +1,13 @@
 package service
 
 import (
-	. "github.com/Danceiny/dict-service/persistence"
-	. "github.com/Danceiny/dict-service/persistence/entity"
+    . "github.com/Danceiny/dict-service/persistence/entity"
 )
 
 var BaseCrudServiceImplCpt *BaseCrudServiceImpl
 
 func init() {
-	BaseCrudServiceImplCpt = &BaseCrudServiceImpl{RepoCpt}
+
 }
 
 type BaseCrudServiceImpl struct {
@@ -22,7 +21,7 @@ func (impl *BaseCrudServiceImpl) Update(entity EntityIfc) {
 
 }
 func (impl *BaseCrudServiceImpl) Add(entity EntityIfc) {
-	impl.repository.Ad
+	impl.repository.Add(entity)
 }
 func (impl *BaseCrudServiceImpl) MultiGet(t DictTypeEnum, bids []BID, simple bool) []EntityIfc {
 	return nil

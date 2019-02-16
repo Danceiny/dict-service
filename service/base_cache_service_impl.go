@@ -19,7 +19,6 @@ var (
 )
 
 func init() {
-	BaseCacheServiceImplCpt = &BaseCacheServiceImpl{RedisImplCpt}
 	ENTITY_CACHE_EXPIRATION = 30 * 24 * time.Hour
 	EMPTY_ENTITY_JSON = "{\"bid\":null}"
 	EMPTY_ENTITY_JSON_BYTES = []byte(EMPTY_ENTITY_JSON)

@@ -13,16 +13,6 @@ var (
 	RepoCpt *RepositoryServiceImpl
 )
 
-func init() {
-	// db, err = gorm.Open("mysql", "chaoge:chaoge@tcp(192.168.1.40:3306)/dict?charset=utf8&parseTime=True&loc=Local")
-	db, err := gorm.Open("mysql", "root:1996@tcp(192.168.1.13:3306)/dict?charset=utf8&parseTime=True&loc=Local")
-	if err != nil {
-		log.Fatalf("connect to mysql failed: %v", err)
-	}
-	db.LogMode(true)
-	RepoCpt = &RepositoryServiceImpl{db: db}
-}
-
 func CloseDB() {
 	err := RepoCpt.db.Close()
 	if err != nil {

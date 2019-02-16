@@ -1,32 +1,32 @@
 package entity
 
 import (
-	. "github.com/Danceiny/dict-service/common"
+    . "github.com/Danceiny/dict-service/common"
 )
 
 type CategoryLevel int
 
 const (
-	_ CategoryLevel = iota
-	ROOT
-	FIRST
-	SECOND
-	THIRD
+    _ CategoryLevel = iota
+    ROOT
+    FIRST
+    SECOND
+    THIRD
 )
 
 type CategoryEntity struct {
-	TreeEntity
-	Bid         String
-	Name        string
-	Level       NodeLevel
-	EnglishName string
-	Pinyin      string
+    TreeEntity
+    Bid         String
+    Name        string
+    Level       NodeLevel
+    EnglishName string
+    Pinyin      string
 }
 
 func (entity CategoryEntity) GetBid() BID {
-	return entity.Bid
+    return entity.Bid
 }
 
 func (CategoryEntity) GetType() DictTypeEnum {
-	return CATEGORY
+    return CATEGORY
 }
