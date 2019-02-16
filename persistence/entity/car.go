@@ -1,21 +1,25 @@
 package entity
 
 import (
-    . "github.com/Danceiny/dict-service/common"
+	. "github.com/Danceiny/dict-service/common"
 )
 
 type CarLevel int
 
 const (
-    _ CarLevel = iota
-    KIND
-    BRAND
-    SERIES
-    MODEL
+	_ CarLevel = iota
+	KIND
+	BRAND
+	SERIES
+	MODEL
 )
 
 type CarEntity struct {
-    BaseEntity
-    Name  string
-    Level NodeLevel
+	TreeEntity
+	Name  string
+	Level NodeLevel
+}
+
+func (CarEntity) GetType() DictTypeEnum {
+	return CAR
 }
