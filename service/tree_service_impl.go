@@ -16,7 +16,12 @@ func (impl *TreeServiceImpl) GetTree(t DictTypeEnum, bid BID, p int, c int,
     simple bool, skipCache bool) TreeEntityIfc {
     var perfCheck = p != 0 || c != 0
     if !perfCheck {
-        return impl.BaseCrudServ.GetEntity(t, bid, simple, skipCache, false).(TreeEntityIfc)
+        tmp := impl.BaseCrudServ.GetEntity(t, bid, simple, skipCache, false)
+        if tmp == nil {
+            return nil
+        } else {
+            return tmp.(TreeEntityIfc)
+        }
     }
     var bytesList [][]byte
     bytesList = impl.TreeCacheServ.GetEntityInPipeline(t, bid, simple, p, c)

@@ -28,6 +28,7 @@ var (
     treeCacheServiceImplCpt  *TreeCacheServiceImpl
     treeServiceImplCpt       *TreeServiceImpl
     baseCrudServiceImplCpt   *BaseCrudServiceImpl
+    baseCacheServiceImplCpt  *BaseCacheServiceImpl
 )
 
 func InitEnv() {
@@ -39,18 +40,18 @@ func InitEnv() {
 func ScanComponent() {
     repositoryServiceImplCpt = &RepositoryServiceImpl{db}
     redisImplCpt = &RedisImpl{client}
-    baseCrudServiceImplCpt = &BaseCrudServiceImpl{repositoryServiceImplCpt}
-    BaseCacheServiceImplCpt = &BaseCacheServiceImpl{redisImplCpt}
-    treeCacheServiceImplCpt = &TreeCacheServiceImpl{redisImplCpt, BaseCacheServiceImplCpt}
+    baseCacheServiceImplCpt = &BaseCacheServiceImpl{redisImplCpt}
+    baseCrudServiceImplCpt = &BaseCrudServiceImpl{repositoryServiceImplCpt, baseCacheServiceImplCpt}
+    treeCacheServiceImplCpt = &TreeCacheServiceImpl{redisImplCpt, baseCacheServiceImplCpt}
     treeServiceImplCpt = &TreeServiceImpl{repositoryServiceImplCpt, baseCrudServiceImplCpt, treeCacheServiceImplCpt}
     ScanService()
-
 }
+
 func ScanService() {
     AreaServiceImplCpt = &AreaServiceImpl{
         repositoryServiceImplCpt,
         treeServiceImplCpt,
-        BaseCacheServiceImplCpt}
+        baseCacheServiceImplCpt}
 }
 
 func InitDB() {

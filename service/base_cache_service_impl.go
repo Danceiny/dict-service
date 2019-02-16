@@ -12,7 +12,7 @@ import (
 )
 
 var (
-    BaseCacheServiceImplCpt *BaseCacheServiceImpl
+    baseCacheServiceImplCpt *BaseCacheServiceImpl
     ENTITY_CACHE_EXPIRATION time.Duration
     EMPTY_ENTITY_JSON       string
     EMPTY_ENTITY_JSON_BYTES []byte
