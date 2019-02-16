@@ -20,6 +20,10 @@ github.com/Danceiny/go.fastjson v0.0.0-20190216105244-da65d641a199 h1:85ZeQ5DILs
 github.com/Danceiny/go.fastjson v0.0.0-20190216105244-da65d641a199/go.mod h1:gJj9mUrey4CKlq6s6nJOBsYzAdxnqgnTllMvhyCANYY=
 github.com/Danceiny/go.utils v0.0.0-20190216112107-49485b5965d3 h1:6CVgedkxF0gtgvHMNB0jqtqCWUXaiwGS/PsuWjE+DWk=
 github.com/Danceiny/go.utils v0.0.0-20190216112107-49485b5965d3/go.mod h1:r9TWTo8jlZRrdlA9Cq4aBa8qm/H7nauesewfmdXVpIo=
+github.com/Danceiny/go.utils v0.0.0-20190216124757-0f66a005d8f8 h1:7dL7Vp4VLZdGUmJ+oN8DE6DmfsEAcEdcssmEWDf79W8=
+github.com/Danceiny/go.utils v0.0.0-20190216124757-0f66a005d8f8/go.mod h1:r9TWTo8jlZRrdlA9Cq4aBa8qm/H7nauesewfmdXVpIo=
+github.com/Danceiny/go.utils v0.0.0-20190216135722-d2a64efceb61 h1:GfnMnmJPfzG5U0wCWaP3GI88IAPitf8o4Hxz8ngw3pw=
+github.com/Danceiny/go.utils v0.0.0-20190216135722-d2a64efceb61/go.mod h1:r9TWTo8jlZRrdlA9Cq4aBa8qm/H7nauesewfmdXVpIo=
 github.com/Shopify/sarama v1.19.0/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWXgklEdEo=
 github.com/Shopify/sarama v1.20.1/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWXgklEdEo=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=

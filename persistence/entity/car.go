@@ -16,10 +16,15 @@ const (
 
 type CarEntity struct {
     TreeEntity
+    Pid   BID `gorm:"column:parent_bid" json:"parentBid"`
     Name  string
     Level NodeLevel
 }
 
 func (CarEntity) GetType() DictTypeEnum {
     return CAR
+}
+
+func (entity *CarEntity) GetParentBid() BID {
+    return entity.Pid
 }

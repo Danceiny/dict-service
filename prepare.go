@@ -2,18 +2,12 @@ package main
 
 import (
     "fmt"
-    . "github.com/Danceiny/dict-service/persistence"
     . "github.com/Danceiny/dict-service/service"
     . "github.com/Danceiny/go.utils"
     "github.com/go-redis/redis"
     "github.com/jinzhu/gorm"
     "log"
     "os"
-)
-
-var (
-    client *redis.Client
-    db     *gorm.DB
 )
 
 func Prepare() {
@@ -23,28 +17,54 @@ func Prepare() {
     ScanComponent()
 }
 
+var (
+    client *redis.Client
+    db     *gorm.DB
+)
+
+var (
+    repositoryServiceImplCpt *RepositoryServiceImpl
+    redisImplCpt             *RedisImpl
+    treeCacheServiceImplCpt  *TreeCacheServiceImpl
+    treeServiceImplCpt       *TreeServiceImpl
+    baseCrudServiceImplCpt   *BaseCrudServiceImpl
+)
+
 func InitEnv() {
-    _ = os.Setenv("REDIS_ADDR", "127.0.0.1:6379")
-    _ = os.Setenv("REDIS_PASSWORD", "")
+    _ = os.Setenv("MYSQL_PASSWORD", "1996")
+    _ = os.Setenv("MYSQL_DATABASE", "dict")
+    _ = os.Setenv("SHOW_SQL", "1")
 }
 
 func ScanComponent() {
-    RepoCpt = &RepositoryServiceImpl{db}
-    RedisImplCpt = &RedisImpl{}
-    BaseCrudServiceImplCpt = &BaseCrudServiceImpl{RepoCpt}
-    BaseCacheServiceImplCpt = &BaseCacheServiceImpl{RedisImplCpt}
+    repositoryServiceImplCpt = &RepositoryServiceImpl{db}
+    redisImplCpt = &RedisImpl{client}
+    baseCrudServiceImplCpt = &BaseCrudServiceImpl{repositoryServiceImplCpt}
+    BaseCacheServiceImplCpt = &BaseCacheServiceImpl{redisImplCpt}
+    treeCacheServiceImplCpt = &TreeCacheServiceImpl{redisImplCpt, BaseCacheServiceImplCpt}
+    treeServiceImplCpt = &TreeServiceImpl{repositoryServiceImplCpt, baseCrudServiceImplCpt, treeCacheServiceImplCpt}
+    ScanService()
+
+}
+func ScanService() {
+    AreaServiceImplCpt = &AreaServiceImpl{
+        repositoryServiceImplCpt,
+        treeServiceImplCpt,
+        BaseCacheServiceImplCpt}
 }
 
 func InitDB() {
-    db, err := gorm.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=True&loc=Local",
-        GetEnvOrDefault("MYSQL_USERNAME", "root"),
-        GetEnvOrDefault("MYSQL_PASSWORD", "root"),
-        GetEnvOrDefault("MYSQL_ADDR", "127.0.0.1:3306"),
-        GetEnvOrDefault("MYSQL_CHARSET", "utf-8")))
+    var err error
+    db, err = gorm.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=True&loc=Local",
+        GetEnvOrDefault("MYSQL_USERNAME", "root").(string),
+        GetEnvOrDefault("MYSQL_PASSWORD", "root").(string),
+        GetEnvOrDefault("MYSQL_ADDR", "127.0.0.1:3306").(string),
+        GetEnvOrDefault("MYSQL_DATABASE", "").(string),
+        GetEnvOrDefault("MYSQL_CHARSET", "utf8").(string)))
     if err != nil {
         log.Fatalf("connect to mysql failed: %v", err)
     }
-    db.LogMode(true)
+    db.LogMode(GetEnvOrDefault("SHOW_SQL", false).(bool))
 }
 
 func InitRedis() {

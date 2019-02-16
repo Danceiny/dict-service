@@ -4,14 +4,9 @@ import (
     . "github.com/Danceiny/dict-service/persistence/entity"
 )
 
-var BaseCrudServiceImplCpt *BaseCrudServiceImpl
-
-func init() {
-
-}
 
 type BaseCrudServiceImpl struct {
-	repository RepositoryService
+	RepoServ RepositoryService
 }
 
 func (impl *BaseCrudServiceImpl) Delete(entity EntityIfc) {
@@ -21,7 +16,7 @@ func (impl *BaseCrudServiceImpl) Update(entity EntityIfc) {
 
 }
 func (impl *BaseCrudServiceImpl) Add(entity EntityIfc) {
-	impl.repository.Add(entity)
+	impl.RepoServ.Add(entity)
 }
 func (impl *BaseCrudServiceImpl) MultiGet(t DictTypeEnum, bids []BID, simple bool) []EntityIfc {
 	return nil

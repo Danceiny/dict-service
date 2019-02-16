@@ -5,7 +5,7 @@ require (
 	dmitri.shuralyov.com/service/change v0.0.0-20190203163610-217368fe4577 // indirect
 	git.apache.org/thrift.git v0.12.0 // indirect
 	github.com/Danceiny/go.fastjson v0.0.0-20190216105244-da65d641a199
-	github.com/Danceiny/go.utils v0.0.0-20190216112107-49485b5965d3
+	github.com/Danceiny/go.utils v0.0.0-20190216135722-d2a64efceb61
 	github.com/Shopify/sarama v1.20.1 // indirect
 	github.com/coreos/go-systemd v0.0.0-20190212144455-93d5ec2c7f76 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20190204142019-df6d76eb9289 // indirect

@@ -1,4 +1,4 @@
-package persistence
+package service
 
 import (
     "github.com/go-redis/redis"
@@ -6,9 +6,6 @@ import (
     "time"
 )
 
-var (
-    RedisImplCpt *RedisImpl
-)
 
 type Pipeliner = redis.Pipeliner
 
@@ -27,11 +24,11 @@ type Redis interface {
     MSet(m map[string]interface{})
 }
 type RedisImpl struct {
-    client *redis.Client
+    Client *redis.Client
 }
 
 func (impl *RedisImpl) HMGet(key string, fields ...string) []interface{} {
-    if ret, err := impl.client.HMGet(key, fields...).Result(); err != nil {
+    if ret, err := impl.Client.HMGet(key, fields...).Result(); err != nil {
         log.Warning(err)
         return nil
     } else {
@@ -40,7 +37,7 @@ func (impl *RedisImpl) HMGet(key string, fields ...string) []interface{} {
 }
 
 func (impl *RedisImpl) MGet(keys ...string) []interface{} {
-    if ret, err := impl.client.MGet(keys...).Result(); err != nil {
+    if ret, err := impl.Client.MGet(keys...).Result(); err != nil {
         log.Warning(err)
         return nil
     } else {
@@ -49,7 +46,7 @@ func (impl *RedisImpl) MGet(keys ...string) []interface{} {
 }
 
 func (impl *RedisImpl) HMSet(key string, m map[string]interface{}) {
-    _, err := impl.client.HMSet(key, m).Result()
+    _, err := impl.Client.HMSet(key, m).Result()
     if err != nil {
         log.Warning(err)
     }
@@ -60,14 +57,14 @@ func (impl *RedisImpl) MSet(m map[string]interface{}) {
     for k, v := range m {
         args = append(args, k, v)
     }
-    _, err := impl.client.MSet(m).Result()
+    _, err := impl.Client.MSet(m).Result()
     if err != nil {
         log.Warning(err)
     }
 }
 
 func (impl *RedisImpl) Pipelined(f func(pipe Pipeliner) error) []string {
-    cmds, err := impl.client.Pipelined(f)
+    cmds, err := impl.Client.Pipelined(f)
     if err != nil {
         log.Warning(err)
         return nil
@@ -81,11 +78,11 @@ func (impl *RedisImpl) Pipelined(f func(pipe Pipeliner) error) []string {
 }
 
 func (impl *RedisImpl) Pipeline() Pipeliner {
-    return impl.client.Pipeline()
+    return impl.Client.Pipeline()
 }
 
 func (impl *RedisImpl) HGet(key string, field string) []byte {
-    if ret, err := impl.client.HGet(key, field).Bytes(); err != nil {
+    if ret, err := impl.Client.HGet(key, field).Bytes(); err != nil {
         log.Warningf("redis HGet error: %v", err)
         return nil
     } else {
@@ -94,7 +91,7 @@ func (impl *RedisImpl) HGet(key string, field string) []byte {
 }
 
 func (impl *RedisImpl) Get(key string) []byte {
-    if ret, err := impl.client.Get(key).Bytes(); err != nil {
+    if ret, err := impl.Client.Get(key).Bytes(); err != nil {
         log.Warningf("redis Get error: %v", err)
         return nil
     } else {
@@ -103,20 +100,20 @@ func (impl *RedisImpl) Get(key string) []byte {
 }
 
 func (impl *RedisImpl) Set(key string, bytes []byte, expiration time.Duration) {
-    if _, err := impl.client.Set(key, bytes, expiration).Result(); err != nil {
+    if _, err := impl.Client.Set(key, bytes, expiration).Result(); err != nil {
         log.Warningf("redis Set error: %v", err)
     }
 }
 
 func (impl *RedisImpl) HSet(key string, field string, bytes []byte) {
     log.Infof("【HSet】key: %s, field: %s, bytes: %s", key, field, bytes)
-    if _, err := impl.client.HSet(key, field, bytes).Result(); err != nil {
+    if _, err := impl.Client.HSet(key, field, bytes).Result(); err != nil {
         log.Warningf("redis HSet error: %v", err)
     }
 }
 
 func (impl *RedisImpl) HDel(key string, fields ...string) int64 {
-    if ret, err := impl.client.HDel(key, fields...).Result(); err != nil {
+    if ret, err := impl.Client.HDel(key, fields...).Result(); err != nil {
         log.Warningf("HGet error: %v", err)
         return 0
     } else {
@@ -125,7 +122,7 @@ func (impl *RedisImpl) HDel(key string, fields ...string) int64 {
 }
 
 func (impl *RedisImpl) Del(key ...string) int64 {
-    if ret, err := impl.client.Del(key...).Result(); err != nil {
+    if ret, err := impl.Client.Del(key...).Result(); err != nil {
         log.Warningf("Del error: %v", err)
         return 0
     } else {

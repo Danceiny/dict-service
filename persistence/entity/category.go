@@ -17,6 +17,7 @@ const (
 type CategoryEntity struct {
     TreeEntity
     Bid         String
+    Pid         String `gorm:"column:parent_bid" json:"parentBid"`
     Name        string
     Level       NodeLevel
     EnglishName string
@@ -29,4 +30,8 @@ func (entity CategoryEntity) GetBid() BID {
 
 func (CategoryEntity) GetType() DictTypeEnum {
     return CATEGORY
+}
+
+func (entity *CategoryEntity) GetParentBid() BID {
+    return entity.Pid
 }

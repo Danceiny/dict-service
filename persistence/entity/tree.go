@@ -6,6 +6,7 @@ import (
 
 type TreeEntityIfc interface {
     EntityIfc
+    GetParentBid() BID
     GetLevel() NodeLevel
     SetLevel(level NodeLevel)
     GetCids() []BID
@@ -24,7 +25,6 @@ type TreeEntityIfc interface {
 type TreeEntity struct {
     BaseEntity
     Level       NodeLevel     `gorm:"column:node_level" json:"level"`
-    Pid         BID           `gorm:"column:parent_bid" json:"parentBid"`
     Cids        []BID         `gorm:"-" json:"-"`
     Pids        []BID         `gorm:"-" json:"-"`
     Children    []*TreeEntity `gorm:"-" json:"-"`
@@ -35,6 +35,11 @@ type TreeEntity struct {
 func (entity *TreeEntity) GetType() DictTypeEnum {
     // abstract method, implemented by subclass
     return 0
+}
+
+func (entity *TreeEntity) GetParentBid() BID {
+    // abstract method, implemented by subclass
+    return nil
 }
 
 func (entity *TreeEntity) GetLevel() NodeLevel {

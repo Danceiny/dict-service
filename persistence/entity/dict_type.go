@@ -43,3 +43,15 @@ func (t *DictTypeEnum) String() string {
     }
     return ""
 }
+
+func (t *DictTypeEnum) InitEmpty() EntityIfc {
+    switch *t {
+    case CATEGORY:
+        return &CategoryEntity{}
+    case AREA:
+        return &AreaEntity{}
+    case CAR:
+        return &CarEntity{}
+    }
+    return nil
+}
