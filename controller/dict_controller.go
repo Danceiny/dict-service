@@ -5,7 +5,7 @@ import (
     . "github.com/Danceiny/dict-service/service"
     . "github.com/Danceiny/go.utils"
     "github.com/gin-gonic/gin"
-    log "github.com/sirupsen/logrus"
+    "github.com/sirupsen/logrus"
     "strconv"
 )
 
@@ -50,12 +50,29 @@ func (handler *DictHandler) respond(c *gin.Context, vo FlatVO) {
 }
 func (handler *DictHandler) GetArea(c *gin.Context) {
     // 处理参数
-    id, err := strconv.Atoi(c.Param("id"))
+    var id, parentDepth, childrenDepth int
+    var err error
+    id, err = strconv.Atoi(c.Param("id"))
     if err != nil {
-        log.Warning("id is not integer")
+        ThrowArgException("id is not integer")
+    }
+    pstr := c.Query("parentDepth")
+    if pstr != "" {
+        parentDepth, err = strconv.Atoi(pstr)
+        if err != nil {
+            ThrowArgException("parentDepth is not integer")
+        }
+    }
+    cstr := c.Query("childrenDepth")
+    logrus.Infof(cstr)
+    if cstr != "" {
+        childrenDepth, err = strconv.Atoi(cstr)
+        if err != nil {
+            ThrowArgException("parentDepth is not integer")
+        }
     }
     // 调用并响应
-    handler.respond(c, AreaServiceImplCpt.GetArea(common.NodeId(id), 0, 0))
+    handler.respond(c, AreaServiceImplCpt.GetArea(common.NodeId(id), parentDepth, childrenDepth))
 }
 
 //

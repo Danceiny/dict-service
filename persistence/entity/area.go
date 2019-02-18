@@ -1,6 +1,8 @@
 package entity
 
-import "github.com/Danceiny/dict-service/common"
+import (
+    . "github.com/Danceiny/dict-service/common"
+)
 
 type AreaLevel int
 
@@ -37,11 +39,11 @@ func (level *AreaLevel) String() string {
 
 type AreaEntity struct {
     TreeEntity
-    Pid         common.NodeId `gorm:"column:parent_bid" json:"parentBid"`
-    Name        string        `gorm:"column:node_name" json:"name"`
-    EnglishName string        `gorm:"column:english_name" json:"englishName"`
-    Level       AreaLevel     `gorm:"column:node_level" json:"level"`
-    Code        uint          `gorm:"column:area_code" json:"areaCode"`
+    Pid         NodeId    `gorm:"column:parent_bid" json:"parentBid"`
+    Name        string    `gorm:"column:node_name" json:"name"`
+    EnglishName string    `gorm:"column:english_name" json:"englishName"`
+    Level       AreaLevel `gorm:"column:node_level" json:"level"`
+    Code        uint      `gorm:"column:area_code" json:"areaCode"`
 }
 
 func (AreaEntity) TableName() string {
@@ -54,4 +56,9 @@ func (AreaEntity) GetType() DictTypeEnum {
 
 func (entity *AreaEntity) GetParentBid() BID {
     return entity.Pid
+}
+
+func (entity *AreaEntity) GetDefaultBid() BID {
+    // abstract method, implemented by subclass
+    return NodeId(-1)
 }

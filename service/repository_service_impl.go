@@ -2,9 +2,11 @@ package service
 
 import (
     "fmt"
+    . "github.com/Danceiny/dict-service/common"
     . "github.com/Danceiny/dict-service/persistence/entity"
     "github.com/jinzhu/gorm"
     _ "github.com/jinzhu/gorm/dialects/mysql"
+    "github.com/sirupsen/logrus"
     "time"
 )
 
@@ -50,6 +52,36 @@ func (repo *RepositoryServiceImpl) GetEntity(t DictTypeEnum, bid BID, withTrashe
     }
 }
 
-func (*RepositoryServiceImpl) GetCids(t DictTypeEnum, parentBid BID) []BID {
-    return nil
+func (repo *RepositoryServiceImpl) GetCids(t DictTypeEnum, parentBid BID) []BID {
+    return repo.getCids(t, parentBid, false)
+}
+
+func (repo *RepositoryServiceImpl) getCids(t DictTypeEnum, parentBid BID, withTrashed bool) []BID {
+    var sql string
+    if withTrashed {
+        sql = fmt.Sprintf("SELECT %s FROM %s WHERE parent_bid = ? ORDER BY weight ASC",
+            t.GetBidColName(), t.GetTableName())
+    } else {
+        sql = fmt.Sprintf("SELECT %s FROM %s WHERE parent_bid = ? AND deleted_time = 0 ORDER BY weight ASC",
+            t.GetBidColName(), t.GetTableName())
+    }
+    db := repo.DB.Raw(sql, parentBid)
+    rows, err := db.Rows()
+    if err != nil {
+        logrus.Errorf("get cids error: %v", err)
+    }
+    var bids = make([]BID, 0, 16)
+    var i int
+    for rows.Next() {
+        var bid = parentBid.Empty()
+        if err := rows.Scan(&bid); err != nil {
+            logrus.Warningf("scan error: %v", err)
+        } else {
+            logrus.Infof("bid: %v", bid)
+            bids = append(bids, bid)
+        }
+        i++
+    }
+    logrus.Infof("count %d", i)
+    return bids
 }

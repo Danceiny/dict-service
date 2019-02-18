@@ -6,7 +6,6 @@ import (
     "time"
 )
 
-
 type Pipeliner = redis.Pipeliner
 
 type Redis interface {
@@ -19,7 +18,7 @@ type Redis interface {
     Pipelined(func(pipe Pipeliner) error) []string
     Del(key ...string) int64
     HMSet(key string, m map[string]interface{})
-    HMGet(key string, fields ...string) []interface{}
+    HMGet(key string, fields ...string) [][]byte
     MGet(keys ...string) []interface{}
     MSet(m map[string]interface{})
 }
@@ -27,16 +26,22 @@ type RedisImpl struct {
     Client *redis.Client
 }
 
-func (impl *RedisImpl) HMGet(key string, fields ...string) []interface{} {
+func (impl *RedisImpl) HMGet(key string, fields ...string) [][]byte {
+    if fields == nil {
+        return nil
+    }
     if ret, err := impl.Client.HMGet(key, fields...).Result(); err != nil {
         log.Warning(err)
         return nil
     } else {
-        return ret
+        return InterfaceSlice2BytesSlice(ret)
     }
 }
 
 func (impl *RedisImpl) MGet(keys ...string) []interface{} {
+    if keys == nil {
+        return nil
+    }
     if ret, err := impl.Client.MGet(keys...).Result(); err != nil {
         log.Warning(err)
         return nil
@@ -66,15 +71,13 @@ func (impl *RedisImpl) MSet(m map[string]interface{}) {
 func (impl *RedisImpl) Pipelined(f func(pipe Pipeliner) error) []string {
     cmds, err := impl.Client.Pipelined(f)
     if err != nil {
-        log.Warning(err)
-        return nil
-    } else {
-        ret := make([]string, len(cmds))
-        for i, cmd := range cmds {
-            ret[i] = cmd.(*redis.StringCmd).Val()
-        }
-        return ret
+        log.Warningf("pipelined error: %v", err)
     }
+    ret := make([]string, len(cmds))
+    for i, cmd := range cmds {
+        ret[i] = cmd.(*redis.StringCmd).Val()
+    }
+    return ret
 }
 
 func (impl *RedisImpl) Pipeline() Pipeliner {
@@ -113,6 +116,9 @@ func (impl *RedisImpl) HSet(key string, field string, bytes []byte) {
 }
 
 func (impl *RedisImpl) HDel(key string, fields ...string) int64 {
+    if fields == nil {
+        return 0
+    }
     if ret, err := impl.Client.HDel(key, fields...).Result(); err != nil {
         log.Warningf("HGet error: %v", err)
         return 0
@@ -121,8 +127,11 @@ func (impl *RedisImpl) HDel(key string, fields ...string) int64 {
     }
 }
 
-func (impl *RedisImpl) Del(key ...string) int64 {
-    if ret, err := impl.Client.Del(key...).Result(); err != nil {
+func (impl *RedisImpl) Del(keys ...string) int64 {
+    if keys == nil {
+        return 0
+    }
+    if ret, err := impl.Client.Del(keys...).Result(); err != nil {
         log.Warningf("Del error: %v", err)
         return 0
     } else {

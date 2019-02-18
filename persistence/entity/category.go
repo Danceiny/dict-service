@@ -35,3 +35,7 @@ func (CategoryEntity) GetType() DictTypeEnum {
 func (entity *CategoryEntity) GetParentBid() BID {
     return entity.Pid
 }
+
+func (entity *CategoryEntity) GetDefaultBid() BID {
+    return String("")
+}

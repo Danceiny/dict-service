@@ -4,7 +4,6 @@ import (
     . "github.com/Danceiny/dict-service/common"
     . "github.com/Danceiny/dict-service/persistence/entity"
     . "github.com/Danceiny/go.fastjson"
-    "log"
 )
 
 type AreaVO struct {
@@ -20,7 +19,6 @@ type AreaVO struct {
 
 func (vo *AreaVO) ToFlatVO() *JSONObject {
     if nil == vo {
-        log.Println("`````````")
         return nil
     }
     attr := vo.Attr

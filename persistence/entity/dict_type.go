@@ -1,5 +1,12 @@
 package entity
 
+import (
+    "encoding/json"
+    . "github.com/Danceiny/dict-service/common"
+    "github.com/Danceiny/go.fastjson"
+    log "github.com/sirupsen/logrus"
+)
+
 type DictTypeEnum int
 
 const (
@@ -54,4 +61,23 @@ func (t *DictTypeEnum) InitEmpty() EntityIfc {
         return &CarEntity{}
     }
     return nil
+}
+
+func (t *DictTypeEnum) parseBids(bytes []byte, bids *[]BID) {
+    return fastjson.ParseArray(string(bytes))
+}
+
+func (t *DictTypeEnum)ParseBids(bytes []byte) (bids []BID) {
+    t.parseBids(bytes, &bids)
+    return bids
+}
+
+
+
+func (t *DictTypeEnum)MultiParseBids(bytess [][]byte) [][]BID {
+    bidss := make([][]BID, len(bytess))
+    for i, bytes := range bytess {
+        parseBids(bytes, &bidss[i])
+    }
+    return bidss
 }

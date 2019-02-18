@@ -2,6 +2,7 @@ package service
 
 import (
     . "github.com/Danceiny/dict-service/persistence/entity"
+    . "github.com/Danceiny/dict-service/common"
 )
 
 type BaseCrudServiceImpl struct {

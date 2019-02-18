@@ -28,3 +28,8 @@ func (CarEntity) GetType() DictTypeEnum {
 func (entity *CarEntity) GetParentBid() BID {
     return entity.Pid
 }
+
+func (entity *CarEntity) GetDefaultBid() BID {
+    // abstract method, implemented by subclass
+    return NodeId(-1)
+}

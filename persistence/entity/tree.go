@@ -20,6 +20,11 @@ type TreeEntityIfc interface {
     SetParentChain(parentChain []TreeEntityIfc)
     GetChildren() []TreeEntityIfc
     SetChildren(children []TreeEntityIfc)
+
+    GetDefaultBid() BID
+
+    GetOldLevel() NodeLevel
+    GetOldParentBid() BID
 }
 
 type TreeEntity struct {
@@ -42,6 +47,19 @@ func (entity *TreeEntity) GetParentBid() BID {
     return nil
 }
 
+func (entity *TreeEntity) GetDefaultBid() BID {
+    // abstract method, implemented by subclass
+    return nil
+}
+
+func (entity *TreeEntity) GetOldParentBid() BID {
+    // abstract method, implemented by subclass
+    return nil
+}
+
+func (entity *TreeEntity) GetOldLevel() NodeLevel {
+    return nil
+}
 func (entity *TreeEntity) GetLevel() NodeLevel {
     return entity.Level
 }

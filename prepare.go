@@ -6,7 +6,7 @@ import (
     . "github.com/Danceiny/go.utils"
     "github.com/go-redis/redis"
     "github.com/jinzhu/gorm"
-    "log"
+    log "github.com/sirupsen/logrus"
     "os"
 )
 
@@ -15,6 +15,7 @@ func Prepare() {
     InitDB()
     InitRedis()
     ScanComponent()
+    CollectPanic()
 }
 
 var (
@@ -74,4 +75,11 @@ func InitRedis() {
         Password: GetEnvOrDefault("REDIS_PASSWORD", "").(string),
         DB:       GetEnvOrDefault("REDIS_DB", 0).(int),
     })
+}
+
+func CollectPanic() {
+    err := recover()
+    if err != nil {
+        log.Errorf("Collect Panic: %v", err)
+    }
 }

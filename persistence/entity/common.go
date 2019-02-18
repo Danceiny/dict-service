@@ -2,20 +2,19 @@ package entity
 
 import (
     "encoding/json"
+    . "github.com/Danceiny/dict-service/common"
     "github.com/Danceiny/go.fastjson"
     log "github.com/sirupsen/logrus"
 )
-
-type BID interface {
-    String() string
-}
-
-func ParseBids(bytes []byte) (bids []BID) {
-    if err := json.Unmarshal(bytes, &bids); err != nil {
-        log.Warningf("parse bids error: %v", err)
+func Bids2Json(bids []BID) []byte {
+    bytes, err := json.Marshal(bids)
+    if err != nil {
+        log.Warningf("transfer bids to json error: %v", err)
     }
-    return bids
+    return bytes
 }
+
+
 
 type DynamicAttrPlugin interface {
     GetAttr() *fastjson.JSONObject

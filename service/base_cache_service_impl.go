@@ -7,12 +7,12 @@ import (
 )
 
 import (
+    . "github.com/Danceiny/dict-service/common"
     . "github.com/Danceiny/dict-service/persistence"
     . "github.com/Danceiny/dict-service/persistence/entity"
 )
 
 var (
-    baseCacheServiceImplCpt *BaseCacheServiceImpl
     ENTITY_CACHE_EXPIRATION time.Duration
     EMPTY_ENTITY_JSON       string
     EMPTY_ENTITY_JSON_BYTES []byte
