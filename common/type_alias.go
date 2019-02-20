@@ -1,50 +1,57 @@
 package common
 
 import (
-    "strconv"
+	"strconv"
 )
 
 type BID interface {
-    String() string
-    Empty() BID
+	String() string
+	Empty() BID
 }
+
 type NodeLevel interface {
-    String()
+	String()
+	Val() int
 }
-type NodeId int64
 
-type String string
+type NodeId struct {
+	v interface{}
+}
 
-func (s String) String() string {
-    return string(s)
+type INT int64
+
+type STRING string
+
+func (s STRING) String() string {
+	return string(s)
 }
-func (s String) Empty() BID {
-    return String("")
+func (s STRING) Empty() BID {
+	return STRING("")
 }
-func (id NodeId) String() string {
-    return strconv.FormatInt(int64(id), 10)
+func (id INT) String() string {
+	return strconv.FormatInt(int64(id), 10)
 }
-func (id NodeId) Empty() BID {
-    return NodeId(0)
+func (id INT) Empty() BID {
+	return INT(0)
 }
-func NodeLevelAgtB(a, b NodeLevel) bool {
-    v := CompareNodeLevel(a, b)
-    if v > 0 {
-        return true
-    } else {
-        return false
-    }
+func NodeLevelAgtB(a, b *int) bool {
+	v := CompareNodeLevel(a, b)
+	if v > 0 {
+		return true
+	} else {
+		return false
+	}
 }
-func NodeLevelAltB(a, b NodeLevel) bool {
-    v := CompareNodeLevel(a, b)
-    if v < 0 {
-        return true
-    } else {
-        return false
-    }
+func NodeLevelAltB(a, b *int) bool {
+	v := CompareNodeLevel(a, b)
+	if v < 0 {
+		return true
+	} else {
+		return false
+	}
 }
 
 // todo
-func CompareNodeLevel(a, b NodeLevel) int {
-    return 0
+func CompareNodeLevel(a, b *int) int {
+	return 0
 }

@@ -1,41 +1,41 @@
 package entity
 
 import (
-    . "github.com/Danceiny/dict-service/common"
+	. "github.com/Danceiny/dict-service/common"
 )
 
 type CategoryLevel int
 
 const (
-    _ CategoryLevel = iota
-    ROOT
-    FIRST
-    SECOND
-    THIRD
+	_ CategoryLevel = iota
+	ROOT
+	FIRST
+	SECOND
+	THIRD
 )
 
 type CategoryEntity struct {
-    TreeEntity
-    Bid         String
-    Pid         String `gorm:"column:parent_bid" json:"parentBid"`
-    Name        string
-    Level       NodeLevel
-    EnglishName string
-    Pinyin      string
+	TreeEntity
+	Bid         STRING
+	Pid         STRING `gorm:"column:parent_bid" json:"parentBid"`
+	Name        string
+	Level       NodeLevel
+	EnglishName string
+	Pinyin      string
 }
 
 func (entity CategoryEntity) GetBid() BID {
-    return entity.Bid
+	return entity.Bid
 }
 
 func (CategoryEntity) GetType() DictTypeEnum {
-    return CATEGORY
+	return CATEGORY
 }
 
-func (entity *CategoryEntity) GetParentBid() BID {
-    return entity.Pid
+func (entity *CategoryEntity) GetPid() BID {
+	return entity.Pid
 }
 
 func (entity *CategoryEntity) GetDefaultBid() BID {
-    return String("")
+	return STRING("")
 }

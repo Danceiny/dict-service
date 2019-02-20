@@ -5,5 +5,5 @@ import (
 )
 
 type AreaService interface {
-	GetArea(id NodeId, p, c int) *AreaVO
+	GetArea(id INT, p, c int) *AreaVO
 }
