@@ -6,6 +6,7 @@ import (
     "github.com/Danceiny/go.fastjson"
     log "github.com/sirupsen/logrus"
 )
+
 func Bids2Json(bids []BID) []byte {
     bytes, err := json.Marshal(bids)
     if err != nil {
@@ -13,8 +14,6 @@ func Bids2Json(bids []BID) []byte {
     }
     return bytes
 }
-
-
 
 type DynamicAttrPlugin interface {
     GetAttr() *fastjson.JSONObject
