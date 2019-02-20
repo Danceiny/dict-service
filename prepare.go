@@ -25,6 +25,7 @@ var (
 var (
     repositoryServiceImplCpt *RepositoryServiceImpl
     redisImplCpt             *RedisImpl
+    idFirewall               *IdFirewallServiceImpl
     treeCacheServiceImplCpt  *TreeCacheServiceImpl
     treeServiceImplCpt       *TreeServiceImpl
     baseCrudServiceImplCpt   *BaseCrudServiceImpl
@@ -37,10 +38,24 @@ func InitEnv() {
 func ScanComponent() {
     repositoryServiceImplCpt = &RepositoryServiceImpl{db}
     redisImplCpt = &RedisImpl{client}
-    baseCacheServiceImplCpt = &BaseCacheServiceImpl{redisImplCpt}
-    baseCrudServiceImplCpt = &BaseCrudServiceImpl{repositoryServiceImplCpt, baseCacheServiceImplCpt}
-    treeCacheServiceImplCpt = &TreeCacheServiceImpl{redisImplCpt, baseCacheServiceImplCpt}
-    treeServiceImplCpt = &TreeServiceImpl{repositoryServiceImplCpt, baseCrudServiceImplCpt, treeCacheServiceImplCpt}
+    idFirewall = &IdFirewallServiceImpl{redisImplCpt}
+    baseCacheServiceImplCpt = &BaseCacheServiceImpl{
+        redisImplCpt,
+    }
+    baseCrudServiceImplCpt = &BaseCrudServiceImpl{
+        repositoryServiceImplCpt,
+        baseCacheServiceImplCpt,
+        idFirewall,
+    }
+    treeCacheServiceImplCpt = &TreeCacheServiceImpl{
+        redisImplCpt,
+        baseCacheServiceImplCpt,
+    }
+    treeServiceImplCpt = &TreeServiceImpl{
+        repositoryServiceImplCpt,
+        baseCacheServiceImplCpt,
+        baseCrudServiceImplCpt,
+        treeCacheServiceImplCpt}
     ScanService()
 }
 

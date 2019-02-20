@@ -6,6 +6,7 @@ import (
     . "github.com/Danceiny/dict-service/common"
     . "github.com/Danceiny/dict-service/persistence"
     . "github.com/Danceiny/dict-service/persistence/entity"
+    utils "github.com/Danceiny/go.utils"
     log "github.com/sirupsen/logrus"
 )
 
@@ -15,6 +16,7 @@ var (
 
 type TreeServiceImpl struct {
     RepoServ      RepositoryService
+    BaseCacheServ BaseCacheService
     BaseCrudServ  BaseCrudService
     TreeCacheServ TreeCacheService
 }
@@ -53,16 +55,17 @@ func (impl *TreeServiceImpl) GetTree(t DictTypeEnum, bid BID, p int, c int,
     size := len(bytesList)
     if p != 0 {
         if size > 1 && bytesList[1] != nil {
-            entity.SetPids(t.ParseBids(bytesList[1]))
+            entity.SetPids(t.ParseBidsB(bytesList[1]))
         }
         impl.LoadParent(entity, p, simple)
     }
     if c != 0 {
         if size > 1 && bytesList[size-1] != nil {
-            entity.SetCids(t.ParseBids(bytesList[size-1]))
+            entity.SetCids(t.ParseBidsB(bytesList[size-1]))
         } else {
-            entity.SetCids(impl.RepoServ.GetCids(t, bid))
-            impl.TreeCacheServ.SetChildrenBids(t, bid, entity.GetCids())
+            var cids = impl.RepoServ.GetCids(t, bid)
+            entity.SetCids(cids)
+            impl.TreeCacheServ.SetChildrenBids(t, bid, cids)
         }
         impl.LoadChildren(entity, c, simple)
     }
@@ -216,7 +219,112 @@ func (impl *TreeServiceImpl) LoadParent(entity TreeEntityIfc, depth int, simple 
 }
 
 func (impl *TreeServiceImpl) LoadChildren(entity TreeEntityIfc, depth int, simple bool) {
+    if depth == 0 {
+        return
+    }
+    if depth < 0 {
+        depth = MAX_DEPTH
+    }
+    var bid = entity.GetBid()
+    var t = entity.GetType()
+    // 此处为减少redis请求数，使用multi-get将cids绑到entity身上
+    var cids = entity.GetCids()
+    // 从缓存中取cids
+    if cap(cids) == 0 {
+        cids = impl.TreeCacheServ.GetChildrenBids(t, bid)
+        entity.SetCids(cids)
+    }
+    depth--
+    // cids无缓存，读数据库
+    if cap(cids) == 0 {
+        cids = make([]BID, 0, 16)
+        var children = impl.getChildrenFromDB(t, bid, simple)
+        for _, child := range children {
+            cids = append(cids, child.GetBid())
+            impl.LoadChildren(child, depth, simple)
+        }
+        entity.SetChildren(children)
+        entity.SetCids(cids)
+    } else if len(cids) == 0 {
+        entity.SetChildren(make([]TreeEntityIfc, 0))
+    } else {
+        // 一次获取所有的children
+        var var1 = impl.multiGetBaseTreeEntities(t, cids, simple);
+        // children2不含null
+        var children2 = make([]TreeEntityIfc, 0, 16)
+        for _, var2 := range var1 {
+            if var2 == nil { // InterfaceHasNilValue ?
+                // 缓存的cids，对应的实体拿不到，说明有数据异常
+                impl.TreeCacheServ.DeleteChildrenBids(t, bid);
+            } else {
+                children2 = append(children2, var2)
+            }
+        }
+        var l = len(children2)
+        if depth > 0 && l > 0 {
+            // 如果深度>=2（对应depth>0条件），则获取所有children的cids（cidsList）
+            var bids = make([]BID, 0, 16)
+            for _, child := range children2 {
+                bids = append(bids, child.GetBid())
+            }
+            var cidsList = impl.GetCids(t, bids);
+            // 将cidsList打平，一次获取全部
+            var indexes = make([][2]int, l)
+            // mixIds：所有孙子的id数组
+            var mixIds = make([]BID, 0, 16)
+            var i = 0
+            for c := 0; i < l; i++ {
+                var e = children2[i]
+                var ids = cidsList[i];
+                mixIds = append(mixIds, ids...)
+                e.SetCids(ids)
+                indexes[i][0] = c
+                c += len(ids)
+                indexes[i][1] = c
+            }
+            // 深度-1，准备给所有的children获取children
+            depth--
+            // 一次获取所有的“孙子”（顺序与mixIds一一对应）
+            var entityList = impl.multiGetBaseTreeEntities(t, mixIds, simple);
+            for i := 0; i < l; i++ {
+                var child = children2[i]
+                var from = indexes[i][0]
+                var to = indexes[i][1]
+                log.Infof("---------%d %d %v", from, to, entityList)
+                child.SetChildren(entityList[from:to])
+            }
+            // 下面的还可以继续优化
+            if depth > 0 {
+                log.Infof("children2: %v", children2)
+                for _, child2 := range children2 {
+                    if child2 != nil && !utils.InterfaceHasNilValue(child2) {
+                        var children3 = child2.GetChildren()
+                        log.Infof("children3: %v", children3)
+                        for _, child3 := range children3 {
+                            if child3 != nil && !utils.InterfaceHasNilValue(child3) {
+                                impl.LoadChildren(child3, depth, simple)
+                            } else {
+                                log.Errorf("nil %v", child3)
+                            }
+                        }
+                    } else {
+                        log.Errorf("nil %v", child2)
+                    }
+                }
+            }
+        }
+        entity.SetChildren(children2)
+    }
+}
 
+func (impl *TreeServiceImpl) getChildrenFromDB(t DictTypeEnum, bid BID, simple bool) []TreeEntityIfc {
+    var entities = impl.RepoServ.GetByPid(t, bid, simple)
+    impl.BaseCacheServ.MultiCacheEntity(t, entities, simple)
+    var ret = make([]TreeEntityIfc, len(entities))
+    for i, entity := range entities {
+        ret[i] = entity.(TreeEntityIfc)
+    }
+    return ret
 }
 
 func (impl *TreeServiceImpl) GetCids(t DictTypeEnum, bids []BID) [][]BID {

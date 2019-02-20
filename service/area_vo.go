@@ -7,21 +7,21 @@ import (
 )
 
 type AreaVO struct {
-    Bid                INT         `json:"bid"`
-    Pid                INT         `json:"pid"`
-    Name               string      `json:"name"`
-    EnglishName        string      `json:"englishName"`
-    Level              AreaLevel   `json:"-"`
-    LevelName          string      `json:"levelName"`
-    Code               INT         `json:"areaCode"`
-    Children           []*AreaVO   `json:"children"`
-    ChildrenBidList    []INT       `json:"childrenBidList"`
-    ParentChain        []*AreaVO   `json:"parentChain"`
-    ParentChainBidList []INT       `json:"parentChainBidList"`
-    Brothers           []*AreaVO   `json:"brothers"`
-    IsMunicipality     bool        `json:"isMunicipality"`
-    IsCountyCity       bool        `json:"isCountyCity"`
-    Attr               *JSONObject `json:"attr"`
+    Bid            INT         `json:"bid"`
+    Pid            INT         `json:"pid"`
+    Name           string      `json:"name"`
+    EnglishName    string      `json:"englishName"`
+    Level          AreaLevel   `json:"-"`
+    LevelName      string      `json:"levelName"`
+    Code           INT         `json:"areaCode"`
+    Children       []*AreaVO   `json:"children"`
+    Cids           []BID       `json:"childrenBidList"`
+    ParentChain    []*AreaVO   `json:"parentChain"`
+    Pids           []BID       `json:"parentChainBidList"`
+    Brothers       []*AreaVO   `json:"brothers"`
+    IsMunicipality bool        `json:"isMunicipality"`
+    IsCountyCity   bool        `json:"isCountyCity"`
+    Attr           *JSONObject `json:"attr"`
 }
 
 func (vo *AreaVO) ToFlatVO() *JSONObject {
@@ -39,7 +39,9 @@ func (vo *AreaVO) ToFlatVO() *JSONObject {
         PutFluent("levelName", vo.Level.String()).
         PutFluent("areaCode", vo.Code).
         PutFluent("children", vo.Children).
-        PutFluent("parentChain", vo.ParentChain)
+        PutFluent("childrenBidList", vo.Cids).
+        PutFluent("parentChain", vo.ParentChain).
+        PutFluent("parentChainBidList", vo.ParentChain)
     return attr
 }
 

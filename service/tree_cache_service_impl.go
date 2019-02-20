@@ -18,7 +18,7 @@ type TreeCacheServiceImpl struct {
 
 func (impl *TreeCacheServiceImpl) GetParentBids(t DictTypeEnum, bid BID) []BID {
     c := impl.Cache.HGet(impl.GetChildrenBranchKey(t), bid.String())
-    return t.ParseBids(c)
+    return t.ParseBidsB(c)
 }
 
 func (impl *TreeCacheServiceImpl) GetParentBranchKey(t DictTypeEnum) string {
@@ -60,7 +60,7 @@ func (impl *TreeCacheServiceImpl) GetChildrenBranchKey(t DictTypeEnum) string {
 
 func (impl *TreeCacheServiceImpl) GetChildrenBids(t DictTypeEnum, bid BID) []BID {
     c := impl.Cache.HGet(impl.GetChildrenBranchKey(t), bid.String())
-    return t.ParseBids(c)
+    return t.ParseBidsB(c)
 }
 
 func (impl *TreeCacheServiceImpl) MultiGetChildrenBids(t DictTypeEnum, bids []BID) [][]BID {

@@ -28,32 +28,36 @@ func (impl *AreaServiceImpl) transferEntity2VO(ptr interface{}) *AreaVO {
         return nil
     }
     entity := ptr.(*AreaEntity)
-    areaVO := &AreaVO{}
-    areaVO.Bid = entity.ID
-    areaVO.Name = entity.Name
-    areaVO.Code = entity.Code
-    areaVO.EnglishName = entity.EnglishName
-    areaVO.Level = AreaLevel(entity.Level)
-    areaVO.Attr = entity.Attr
-    areaVO.Pid = entity.Pid
-    areaVO.IsCountyCity = entity.IsCountyCity
+    vo := &AreaVO{}
+    vo.Bid = entity.ID
+    vo.Name = entity.Name
+    vo.Code = entity.Code
+    vo.EnglishName = entity.EnglishName
+    vo.Level = AreaLevel(entity.Level)
+    vo.Attr = entity.Attr
+    vo.Pid = entity.Pid
+    vo.IsCountyCity = entity.IsCountyCity
+    vo.Cids = entity.Cids
+    vo.Pids = entity.Pids
     var parentChain = entity.ParentChain
     if cap(parentChain) != 0 {
         var parentChainVos = make([]*AreaVO, len(parentChain))
         for i, parent := range parentChain {
             parentChainVos[i] = impl.TransferEntity2VO(parent.(*AreaEntity))
         }
-        areaVO.ParentChain = parentChainVos
+        vo.ParentChain = parentChainVos
     }
     var children = entity.Children
     if cap(children) != 0 {
         var childrenVos = make([]*AreaVO, len(children))
         for i, child := range children {
-            childrenVos[i] = impl.TransferEntity2VO(child.(*AreaEntity))
+            if child != nil {
+                childrenVos[i] = impl.TransferEntity2VO(child.(*AreaEntity))
+            }
         }
-        areaVO.Children = childrenVos
+        vo.Children = childrenVos
     }
     // todo
-    areaVO.IsMunicipality = false
-    return areaVO
+    vo.IsMunicipality = false
+    return vo
 }

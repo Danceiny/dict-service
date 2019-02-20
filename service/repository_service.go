@@ -10,5 +10,6 @@ type RepositoryService interface {
     Add(ifc EntityIfc)
     Get(t DictTypeEnum, bid BID, simple bool, withTrashed bool) EntityIfc
     GetEntity(t DictTypeEnum, bid BID, withTrashed bool) EntityIfc
-    GetCids(t DictTypeEnum, parentBid BID) []BID
+    GetCids(t DictTypeEnum, pid BID) []BID
+    GetByPid(t DictTypeEnum, pid BID, simple bool) []EntityIfc
 }

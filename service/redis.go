@@ -18,7 +18,7 @@ type Redis interface {
     Pipelined(func(pipe Pipeliner) error) []string
     Del(key ...string) int64
     HMSet(key string, m map[string]interface{})
-    HMGet(key string, fields ...string) [][]byte
+    HMGet(key string, fields ...string) []interface{}
     MGet(keys ...string) []interface{}
     MSet(m map[string]interface{})
 }
@@ -26,24 +26,28 @@ type RedisImpl struct {
     Client *redis.Client
 }
 
-func (impl *RedisImpl) HMGet(key string, fields ...string) [][]byte {
+func (impl *RedisImpl) HMGet(key string, fields ...string) []interface{} {
     if fields == nil {
         return nil
+    } else if len(fields) == 0 {
+        return make([]interface{}, 0, 0)
     }
     if ret, err := impl.Client.HMGet(key, fields...).Result(); err != nil {
-        log.Warning(err)
+        log.Warningf("HMGet err: %v, fields: %v", err, fields)
         return nil
     } else {
-        return InterfaceSlice2BytesSlice(ret)
+        return ret
     }
 }
 
 func (impl *RedisImpl) MGet(keys ...string) []interface{} {
     if keys == nil {
         return nil
+    } else if len(keys) == 0 {
+        return make([]interface{}, 0, 0)
     }
     if ret, err := impl.Client.MGet(keys...).Result(); err != nil {
-        log.Warning(err)
+        log.Warningf("MGet err: %v", err)
         return nil
     } else {
         return ret
@@ -64,7 +68,7 @@ func (impl *RedisImpl) MSet(m map[string]interface{}) {
     }
     _, err := impl.Client.MSet(m).Result()
     if err != nil {
-        log.Warning(err)
+        log.Warningf("MSet err: %v", err)
     }
 }
 

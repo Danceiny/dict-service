@@ -4,7 +4,7 @@ require (
 	dmitri.shuralyov.com/app/changes v0.0.0-20181114035150-5af16e21babb // indirect
 	dmitri.shuralyov.com/service/change v0.0.0-20190203163610-217368fe4577 // indirect
 	git.apache.org/thrift.git v0.12.0 // indirect
-	github.com/Danceiny/go.fastjson v0.0.0-20190220015827-6a1f27396036
+	github.com/Danceiny/go.fastjson v0.0.0-20190220124935-48377e078b6a
 	github.com/Danceiny/go.utils v0.0.0-20190218101319-fbd2a326bf0b
 	github.com/Shopify/sarama v1.20.1 // indirect
 	github.com/coreos/go-systemd v0.0.0-20190212144455-93d5ec2c7f76 // indirect
@@ -56,6 +56,7 @@ require (
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/shurcooL/webdavfs v0.0.0-20181215192745-5988b2d638f6 // indirect
 	github.com/sirupsen/logrus v1.3.0
+	github.com/stretchr/testify v1.3.0
 	github.com/ugorji/go/codec v0.0.0-20190204201341-e444a5086c43 // indirect
 	go.opencensus.io v0.19.0 // indirect
 	go4.org v0.0.0-20190218023631-ce4c26f7be8e // indirect

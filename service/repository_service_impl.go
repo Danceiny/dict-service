@@ -90,6 +90,9 @@ func (repo *RepositoryServiceImpl) getCids(t DictTypeEnum, parentBid BID, withTr
     if err != nil {
         logrus.Warningf("scan error: %v", err)
     }
-    logrus.Infof("bids: %v", bids)
     return bids
+}
+
+func (*RepositoryServiceImpl) GetByPid(t DictTypeEnum, pid BID, simple bool) []EntityIfc {
+    return nil
 }

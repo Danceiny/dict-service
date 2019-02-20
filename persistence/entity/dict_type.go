@@ -1,8 +1,10 @@
 package entity
 
 import (
+    "encoding/json"
     . "github.com/Danceiny/dict-service/common"
     "github.com/Danceiny/go.fastjson"
+    "github.com/sirupsen/logrus"
 )
 
 type DictTypeEnum int
@@ -14,16 +16,16 @@ const (
     CAR
 )
 
-func (t *DictTypeEnum) GetBidColName() string {
-    if CATEGORY == *t {
+func (t DictTypeEnum) GetBidColName() string {
+    if CATEGORY == t {
         return "bid"
     } else {
         return "id"
     }
 }
 
-func (t *DictTypeEnum) GetTableName() string {
-    switch *t {
+func (t DictTypeEnum) GetTableName() string {
+    switch t {
     case CATEGORY:
         return "dict_category"
     case AREA:
@@ -51,8 +53,8 @@ func (t *DictTypeEnum) String() string {
     return ""
 }
 
-func (t *DictTypeEnum) InitEmpty() EntityIfc {
-    switch *t {
+func (t DictTypeEnum) InitEmpty() EntityIfc {
+    switch t {
     case CATEGORY:
         return &CategoryEntity{}
     case AREA:
@@ -62,14 +64,20 @@ func (t *DictTypeEnum) InitEmpty() EntityIfc {
     }
     return nil
 }
+func (t DictTypeEnum) ParseBidsB(bytes []byte) []BID {
+    if bytes == nil {
+        return nil
+    }
+    return t.ParseBids(string(bytes))
+}
 
-func (t *DictTypeEnum) ParseBids(bytes []byte) []BID {
-    ja := fastjson.ParseArrayB(bytes)
+func (t DictTypeEnum) ParseBids(bytes string) []BID {
+    ja := fastjson.ParseArray(bytes)
     if ja == nil {
         return nil
     }
-    bids := make([]BID, ja.Size())
-    switch *t {
+    bids := make([]BID, 0, ja.Size())
+    switch t {
     case CATEGORY:
         for ja.Next() {
             bids = append(bids, STRING(ja.Current().(string)))
@@ -77,17 +85,56 @@ func (t *DictTypeEnum) ParseBids(bytes []byte) []BID {
         break
     default:
         for ja.Next() {
-            bids = append(bids, INT(ja.Current().(int64)))
+            bids = append(bids, INT(ja.Current().(float64)))
         }
         break
     }
     return bids
 }
 
-func (t *DictTypeEnum) MultiParseBids(bytess [][]byte) [][]BID {
-    bidss := make([][]BID, len(bytess))
-    for i, bytes := range bytess {
-        bidss[i] = t.ParseBids(bytes)
+func (t DictTypeEnum) MultiParseBids(jsons []interface{}) [][]BID {
+    var bidss = make([][]BID, len(jsons))
+    for i, bytes := range jsons {
+        if bytes != nil {
+            bidss[i] = t.ParseBids(bytes.(string))
+        }
     }
     return bidss
+}
+func (t DictTypeEnum) ParseJSON(s string) EntityIfc {
+    if s == "" {
+        return nil
+    }
+    var entity = t.InitEmpty()
+    fastjson.ParseObjectT(s, entity)
+    return entity
+}
+
+func (t DictTypeEnum) ParseJSONB(bytes []byte) EntityIfc {
+    if bytes == nil {
+        return nil
+    }
+    var err error
+    switch t {
+    case AREA:
+        var entity AreaEntity
+        if err = json.Unmarshal(bytes, &entity); err == nil {
+            return &entity
+        }
+        break
+    case CATEGORY:
+        var entity CategoryEntity
+        if err = json.Unmarshal(bytes, &entity); err == nil {
+            return &entity
+        }
+        break
+    case CAR:
+        var entity CarEntity
+        if err = json.Unmarshal(bytes, &entity); err == nil {
+            return &entity
+        }
+        break
+    }
+    logrus.Warningf("ParseJSONB err: %v", err)
+    return nil
 }

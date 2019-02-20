@@ -114,3 +114,28 @@ func (impl *BaseCacheServiceImpl) GetEntityKey(t DictTypeEnum, bid BID, simple b
 func (impl *BaseCacheServiceImpl) GetTableKey(t DictTypeEnum) string {
     return fmt.Sprintf("Dict:EntityHash:%s", t.String())
 }
+
+func (impl *BaseCacheServiceImpl) MultiGetEntityCache(t DictTypeEnum, bids []BID, simple bool) []EntityIfc {
+    var size = len(bids)
+    var jsons []interface{}
+    if t.UseHashCache() {
+        var bidStrs = make([]string, size)
+        for i, bid := range bids {
+            bidStrs[i] = bid.String()
+        }
+        jsons = impl.Cache.HMGet(impl.GetTableKey(t), bidStrs...)
+    } else {
+        var keys = make([]string, size)
+        for i, bid := range bids {
+            keys[i] = impl.GetEntityKey(t, bid, simple)
+        }
+        jsons = impl.Cache.MGet(keys...)
+    }
+    var entities = make([]EntityIfc, size)
+    for i, str := range jsons {
+        if str != nil {
+            entities[i] = t.ParseJSON(str.(string))
+        }
+    }
+    return entities
+}

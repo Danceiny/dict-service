@@ -22,6 +22,12 @@ github.com/Danceiny/go.fastjson v0.0.0-20190218060343-046293657ec2 h1:OTq4s3sIpu
 github.com/Danceiny/go.fastjson v0.0.0-20190218060343-046293657ec2/go.mod h1:tgUAaOwdb2wH36m9n3Syf2h8osX5uWQRicaZr5gqbTg=
 github.com/Danceiny/go.fastjson v0.0.0-20190220015827-6a1f27396036 h1:1M6TYkpRQPRpMuVaCfjJrLwScYBG+3atNWuMzgdDr/w=
 github.com/Danceiny/go.fastjson v0.0.0-20190220015827-6a1f27396036/go.mod h1:tgUAaOwdb2wH36m9n3Syf2h8osX5uWQRicaZr5gqbTg=
+github.com/Danceiny/go.fastjson v0.0.0-20190220020509-352b896c58d4 h1:bqgG9Y8mvX17LuS0+7Nl2YSUOtq5l2XIf82ScSwSVaY=
+github.com/Danceiny/go.fastjson v0.0.0-20190220020509-352b896c58d4/go.mod h1:tgUAaOwdb2wH36m9n3Syf2h8osX5uWQRicaZr5gqbTg=
+github.com/Danceiny/go.fastjson v0.0.0-20190220123659-46527ebc8e25 h1:wyV8C/uNMUCa7SlAPKZGVgbwPcTS3yCJFJ96Bk3DYCg=
+github.com/Danceiny/go.fastjson v0.0.0-20190220123659-46527ebc8e25/go.mod h1:tgUAaOwdb2wH36m9n3Syf2h8osX5uWQRicaZr5gqbTg=
+github.com/Danceiny/go.fastjson v0.0.0-20190220124935-48377e078b6a h1:ce280uD6MZJAasM65zH0rwuunhgV2n9+E3NEdgq3IBo=
+github.com/Danceiny/go.fastjson v0.0.0-20190220124935-48377e078b6a/go.mod h1:tgUAaOwdb2wH36m9n3Syf2h8osX5uWQRicaZr5gqbTg=
 github.com/Danceiny/go.utils v0.0.0-20190216112107-49485b5965d3 h1:6CVgedkxF0gtgvHMNB0jqtqCWUXaiwGS/PsuWjE+DWk=
 github.com/Danceiny/go.utils v0.0.0-20190216112107-49485b5965d3/go.mod h1:r9TWTo8jlZRrdlA9Cq4aBa8qm/H7nauesewfmdXVpIo=
 github.com/Danceiny/go.utils v0.0.0-20190216124757-0f66a005d8f8 h1:7dL7Vp4VLZdGUmJ+oN8DE6DmfsEAcEdcssmEWDf79W8=
