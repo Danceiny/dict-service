@@ -17,7 +17,7 @@ type TreeCacheServiceImpl struct {
 }
 
 func (impl *TreeCacheServiceImpl) GetParentBids(t DictTypeEnum, bid BID) []BID {
-    c := impl.Cache.HGet(impl.GetChildrenBranchKey(t), bid.String())
+    c := impl.Cache.HGet(impl.GetParentBranchKey(t), bid.String())
     return t.ParseBidsB(c)
 }
 

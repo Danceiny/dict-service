@@ -54,12 +54,14 @@ func (impl *TreeServiceImpl) GetTree(t DictTypeEnum, bid BID, p int, c int,
     }
     size := len(bytesList)
     if p != 0 {
+        log.Println("loadParent")
         if size > 1 && bytesList[1] != nil {
             entity.SetPids(t.ParseBidsB(bytesList[1]))
         }
         impl.LoadParent(entity, p, simple)
     }
     if c != 0 {
+        log.Println("loadChildren")
         if size > 1 && bytesList[size-1] != nil {
             entity.SetCids(t.ParseBidsB(bytesList[size-1]))
         } else {
@@ -160,7 +162,7 @@ func (impl *TreeServiceImpl) LoadParent(entity TreeEntityIfc, depth int, simple 
         var parent TreeEntityIfc
         // 为了防止特殊情况下脏数据影响递归
         var loopCounter = MAX_DEPTH
-        for loopCounter--; bidZero != pid && loopCounter > 0; {
+        for loopCounter--; !bidZero.Equal(pid) && loopCounter > 0; {
             var parentVar1 = impl.BaseCrudServ.GetEntity(t, pid, false, simple, false)
             if parentVar1 != nil {
                 parent = parentVar1.(TreeEntityIfc)
@@ -290,16 +292,13 @@ func (impl *TreeServiceImpl) LoadChildren(entity TreeEntityIfc, depth int, simpl
                 var child = children2[i]
                 var from = indexes[i][0]
                 var to = indexes[i][1]
-                log.Infof("---------%d %d %v", from, to, entityList)
                 child.SetChildren(entityList[from:to])
             }
             // 下面的还可以继续优化
             if depth > 0 {
-                log.Infof("children2: %v", children2)
                 for _, child2 := range children2 {
                     if child2 != nil && !utils.InterfaceHasNilValue(child2) {
                         var children3 = child2.GetChildren()
-                        log.Infof("children3: %v", children3)
                         for _, child3 := range children3 {
                             if child3 != nil && !utils.InterfaceHasNilValue(child3) {
                                 impl.LoadChildren(child3, depth, simple)
@@ -363,9 +362,114 @@ func (impl *TreeServiceImpl) MultiGet(t DictTypeEnum, bids []BID,
     simple bool,
     p int, c int,
     onlyId bool,
-    onlyCache bool) []TreeEntityIfc {
-    // todo
-    return nil
+    onlyCache bool, skipCache bool) []TreeEntityIfc {
+    var size = len(bids)
+    var entities []TreeEntityIfc
+    if onlyCache {
+        var var1 = impl.BaseCacheServ.MultiGetEntityCache(t, bids, simple)
+        entities = make([]TreeEntityIfc, len(var1))
+        for i, var2 := range var1 {
+            if var2 != nil && var2.IsEmpty() {
+                entities[i] = var2.(TreeEntityIfc)
+            }
+        }
+    } else {
+        entities = impl.multiGetBaseTreeEntities(t, bids, simple)
+    }
+    if p == 0 && c == 0 {
+        return entities
+    }
+    var pidsList [][]BID
+    var cidsList [][]BID
+    if p != 0 {
+        pidsList = make([][]BID, size)
+        var var1 = impl.GetPids(t, bids)
+        for i, var2 := range var1 {
+            if cap(var2) == 0 {
+                continue
+            }
+            if p < 0 {
+                pidsList[i] = var2
+                continue
+            }
+            var toIndexMax = len(var2)
+            var toIndex = p
+            if toIndex > toIndexMax {
+                toIndex = toIndexMax
+            }
+            pidsList[i] = var2[0:toIndex]
+        }
+    }
+    if c != 0 {
+        cidsList = impl.GetCids(t, bids)
+    }
+    for i := 0; i < size; i++ {
+        var entity = entities[i]
+        if entity == nil {
+            continue
+        }
+        if p != 0 {
+            entity.SetPids(pidsList[i])
+        }
+        if c != 0 {
+            entity.SetCids(cidsList[i])
+        }
+    }
+    if !onlyId {
+        // 为了一次获取全部的parent和children，需要indexes来索引这些parent和children的位置
+        // indexes: [[parentStartIndex, parentEndIndex, childrenStartIndex, childrenEndIndex], ...]
+        // 与entities、bids一一保持一一对应关系
+        var indexes = make([][4]int, size)
+        var flatIdsList = make([]BID, 0, 96)
+        var cursor = 0
+        var pidsListIsNotEmpty = len(pidsList) != 0
+        var cidsListIsNotEmpty = len(cidsList) != 0
+        for i := 0; i < size; i++ {
+            if pidsListIsNotEmpty {
+                var var1 = pidsList[i]
+                if cap(var1) == 0 {
+                    continue
+                }
+                indexes[i][0] = cursor
+                cursor += len(var1)
+                indexes[i][1] = cursor
+                flatIdsList = append(flatIdsList, var1...)
+            }
+            if cidsListIsNotEmpty {
+                var var2 = cidsList[i]
+                if cap(var2) == 0 {
+                    continue
+                }
+                indexes[i][2] = cursor
+                cursor += len(var2)
+                indexes[i][3] = cursor
+                flatIdsList = append(flatIdsList, var2...)
+            }
+        }
+        var parentsAndChildren = impl.multiGetBaseTreeEntities(t, flatIdsList, simple)
+        for i := 0; i < size; i++ {
+            var entity = entities[i]
+            if entity == nil {
+                continue
+            }
+            if p != 0 {
+                entity.SetParentChain(
+                    parentsAndChildren[indexes[i][0]:indexes[i][1]])
+            }
+            if c != 0 {
+                entity.SetChildren(parentsAndChildren[indexes[i][2]:indexes[i][3]])
+            }
+        }
+    } else {
+        for i := 0; i < size; i++ {
+            var entity = entities[i]
+            if entity != nil {
+                entity.SetParentChain(nil)
+                entity.SetChildren(nil)
+            }
+        }
+    }
+    return entities
 }
 
 func (impl *TreeServiceImpl) multiGetBaseTreeEntities(t DictTypeEnum, bids []BID, simple bool) []TreeEntityIfc {

@@ -8,8 +8,7 @@ import (
 func main() {
     defer clean()
     Prepare()
-    if err := Server.Run(); err != nil {
+    if err := Server.Run(":" + port); err != nil {
         log.Fatal(err)
     }
-    // listen and serve on 0.0.0.0:8080
 }

@@ -2,6 +2,7 @@ package entity
 
 import (
     . "github.com/Danceiny/dict-service/common"
+    "github.com/Danceiny/go.fastjson"
 )
 
 type CategoryLevel int
@@ -16,12 +17,9 @@ const (
 
 type CategoryEntity struct {
     TreeEntity
-    Bid         STRING
-    Pid         STRING `gorm:"column:parent_bid" json:"parentBid"`
-    Name        string
-    Level       NodeLevel
-    EnglishName string
-    Pinyin      string
+    Bid    STRING `gorm:"column:bid" json:"bid"`
+    Pid    STRING `gorm:"column:parent_bid" json:"parentBid"`
+    Pinyin string
 }
 
 func (entity CategoryEntity) GetBid() BID {
@@ -38,4 +36,8 @@ func (entity *CategoryEntity) GetPid() BID {
 
 func (entity *CategoryEntity) GetDefaultBid() BID {
     return STRING("")
+}
+
+func (entity *CategoryEntity) ToJSONB() []byte {
+    return fastjson.ToJSONB(entity)
 }

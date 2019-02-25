@@ -27,7 +27,7 @@ func (repo *RepositoryServiceImpl) Get(t DictTypeEnum, bid BID, simple bool, wit
     entity := repo.GetEntity(t, bid, withTrashed)
     if entity != nil && !simple {
         bytes := repo.loadAttr(t, bid)
-        entity.SetAttr(bytes)
+        entity.SetAttrFromBytes(bytes)
     }
     return entity
 }

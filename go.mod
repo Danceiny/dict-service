@@ -1,17 +1,19 @@
 module github.com/Danceiny/dict-service
 
 require (
+	cloud.google.com/go v0.36.0 // indirect
 	dmitri.shuralyov.com/app/changes v0.0.0-20181114035150-5af16e21babb // indirect
 	dmitri.shuralyov.com/service/change v0.0.0-20190203163610-217368fe4577 // indirect
 	git.apache.org/thrift.git v0.12.0 // indirect
-	github.com/Danceiny/go.fastjson v0.0.0-20190220124935-48377e078b6a
+	github.com/Danceiny/go.fastjson v0.0.0-20190225025133-87fb73943960
 	github.com/Danceiny/go.utils v0.0.0-20190218101319-fbd2a326bf0b
-	github.com/Shopify/sarama v1.20.1 // indirect
+	github.com/Shopify/sarama v1.21.0 // indirect
 	github.com/coreos/go-systemd v0.0.0-20190212144455-93d5ec2c7f76 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20190204142019-df6d76eb9289 // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/gin-contrib/sse v0.0.0-20190125020943-a7658810eb74 // indirect
 	github.com/gin-gonic/gin v1.3.0
+	github.com/gliderlabs/ssh v0.1.3 // indirect
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/go-redis/redis v6.15.1+incompatible
 	github.com/go-sql-driver/mysql v1.4.1 // indirect
@@ -19,6 +21,7 @@ require (
 	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/golang/lint v0.0.0-20181217174547-8f45f776aaf1 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/gomodule/redigo v2.0.0+incompatible // indirect
 	github.com/google/pprof v0.0.0-20190208070709-b421f19a5c07 // indirect
 	github.com/googleapis/gax-go v2.0.2+incompatible // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e // indirect
@@ -30,7 +33,7 @@ require (
 	github.com/jinzhu/now v1.0.0 // indirect
 	github.com/kisielk/errcheck v1.2.0 // indirect
 	github.com/lib/pq v1.0.0 // indirect
-	github.com/mattn/go-isatty v0.0.4 // indirect
+	github.com/mattn/go-isatty v0.0.5 // indirect
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -60,16 +63,17 @@ require (
 	github.com/ugorji/go/codec v0.0.0-20190204201341-e444a5086c43 // indirect
 	go.opencensus.io v0.19.0 // indirect
 	go4.org v0.0.0-20190218023631-ce4c26f7be8e // indirect
-	golang.org/x/build v0.0.0-20190219204446-88cd9dd98818 // indirect
-	golang.org/x/crypto v0.0.0-20190219172222-a4c6cb3142f2 // indirect
-	golang.org/x/exp v0.0.0-20190212162250-21964bba6549 // indirect
-	golang.org/x/oauth2 v0.0.0-20190219183015-4b83411ed2b3 // indirect
+	golang.org/x/build v0.0.0-20190223001823-277427799bd4 // indirect
+	golang.org/x/crypto v0.0.0-20190222235706-ffb98f73852f // indirect
+	golang.org/x/exp v0.0.0-20190221220918-438050ddec5e // indirect
+	golang.org/x/oauth2 v0.0.0-20190220154721-9b3c75971fc9 // indirect
 	golang.org/x/perf v0.0.0-20190124201629-844a5f5b46f4 // indirect
-	golang.org/x/sys v0.0.0-20190219203350-90b0e4468f99 // indirect
-	golang.org/x/tools v0.0.0-20190219185102-9394956cfdc5 // indirect
+	golang.org/x/sys v0.0.0-20190222171317-cd391775e71e // indirect
+	golang.org/x/tools v0.0.0-20190221204921-83362c3779f5 // indirect
+	google.golang.org/appengine v1.4.0
 	google.golang.org/genproto v0.0.0-20190219182410-082222b4a5c5 // indirect
 	google.golang.org/grpc v1.18.0 // indirect
-	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 	honnef.co/go/tools v0.0.0-20190215041234-466a0476246c // indirect
 	sourcegraph.com/sqs/pbtypes v1.0.0 // indirect

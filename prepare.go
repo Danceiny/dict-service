@@ -3,7 +3,9 @@ package main
 import (
     "fmt"
     . "github.com/Danceiny/dict-service/service"
+    . "github.com/Danceiny/dict-service/web"
     . "github.com/Danceiny/go.utils"
+    "github.com/gin-gonic/gin"
     "github.com/go-redis/redis"
     "github.com/jinzhu/gorm"
     log "github.com/sirupsen/logrus"
@@ -14,12 +16,15 @@ func Prepare() {
     InitDB()
     InitRedis()
     ScanComponent()
+    InitServer()
     CollectPanic()
 }
 
 var (
-    client *redis.Client
-    db     *gorm.DB
+    client      *redis.Client
+    db          *gorm.DB
+    environment string
+    port        string
 )
 
 var (
@@ -32,7 +37,23 @@ var (
     baseCacheServiceImplCpt  *BaseCacheServiceImpl
 )
 
+func InitServer() {
+    var mode string
+    if environment == "local" {
+        mode = gin.DebugMode
+    } else if environment == "dev" || environment == "test" || environment == "qa" {
+        mode = gin.TestMode
+    } else {
+        mode = gin.ReleaseMode
+    }
+    gin.SetMode(mode)
+    Server = gin.Default()
+    Routing()
+}
+
 func InitEnv() {
+    environment = GetEnvOrDefault("env", "local").(string)
+    port = GetEnvOrDefault("port", "8080").(string)
 }
 
 func ScanComponent() {
@@ -64,6 +85,16 @@ func ScanService() {
         repositoryServiceImplCpt,
         treeServiceImplCpt,
         baseCacheServiceImplCpt}
+    CategoryServiceImplCpt = &CategoryServiceImpl{}
+    CheServiceImplCpt = &CheServiceImpl{}
+    CommunityServiceImplCpt = &CommunityServiceImpl{}
+    CommonServiceImplCpt = &CommonServiceImpl{
+        idFirewall,
+        AreaServiceImplCpt,
+        CategoryServiceImplCpt,
+        CheServiceImplCpt,
+        CommunityServiceImplCpt,
+    }
 }
 
 func InitDB() {

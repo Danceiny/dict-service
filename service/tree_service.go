@@ -21,5 +21,6 @@ type TreeService interface {
         simple bool,
         p int, c int,
         onlyId bool,
-        onlyCache bool) []TreeEntityIfc
+        onlyCache bool,
+        skipCache bool) []TreeEntityIfc
 }

@@ -17,5 +17,5 @@ func Bids2Json(bids []BID) []byte {
 
 type DynamicAttrPlugin interface {
     GetAttr() *fastjson.JSONObject
-    SetAttr(bytes []byte)
+    SetAttrFromBytes(bytes []byte)
 }

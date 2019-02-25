@@ -6,4 +6,5 @@ import (
 
 type AreaService interface {
     GetArea(id INT, p, c int) *AreaVO
+    BatchQuery(ids []BID, simple bool, p int, c int, onlyId bool) []*AreaVO
 }

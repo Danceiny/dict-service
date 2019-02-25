@@ -73,10 +73,7 @@ func (impl *RedisImpl) MSet(m map[string]interface{}) {
 }
 
 func (impl *RedisImpl) Pipelined(f func(pipe Pipeliner) error) []string {
-    cmds, err := impl.Client.Pipelined(f)
-    if err != nil {
-        log.Warningf("pipelined error: %v", err)
-    }
+    var cmds, _ = impl.Client.Pipelined(f)
     ret := make([]string, len(cmds))
     for i, cmd := range cmds {
         ret[i] = cmd.(*redis.StringCmd).Val()

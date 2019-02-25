@@ -2,6 +2,7 @@ package entity
 
 import (
     . "github.com/Danceiny/dict-service/common"
+    "github.com/Danceiny/go.fastjson"
 )
 
 type CarLevel int
@@ -17,8 +18,6 @@ const (
 type CarEntity struct {
     TreeEntity
     Pid   BID `gorm:"column:parent_bid" json:"parentBid"`
-    Name  string
-    Level NodeLevel
 }
 
 func (CarEntity) GetType() DictTypeEnum {
@@ -32,4 +31,8 @@ func (entity *CarEntity) GetPid() BID {
 func (entity *CarEntity) GetDefaultBid() BID {
     // abstract method, implemented by subclass
     return INT(-1)
+}
+
+func (entity *CarEntity) ToJSONB() []byte {
+    return fastjson.ToJSONB(entity)
 }

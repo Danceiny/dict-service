@@ -28,21 +28,37 @@ func (vo *AreaVO) ToFlatVO() *JSONObject {
     if nil == vo {
         return nil
     }
-    attr := vo.Attr
+    var attr = vo.Attr
     if attr == nil || *attr == nil {
         attr = &JSONObject{}
     }
+
     attr.PutFluent("bid", vo.Bid).
         PutFluent("pid", vo.Pid).
         PutFluent("name", vo.Name).
         PutFluent("englishName", vo.EnglishName).
         PutFluent("levelName", vo.Level.String()).
-        PutFluent("areaCode", vo.Code).
-        PutFluent("children", vo.Children).
-        PutFluent("childrenBidList", vo.Cids).
-        PutFluent("parentChain", vo.ParentChain).
-        PutFluent("parentChainBidList", vo.ParentChain)
+        PutFluent("areaCode", vo.Code)
+
+    if cap(vo.ParentChain) != 0 {
+        var parentChainFlatVO = make([]*JSONObject, len(vo.ParentChain))
+        for i, p := range vo.ParentChain {
+            parentChainFlatVO[i] = p.ToFlatVO()
+        }
+        attr.PutFluent("parentChain", parentChainFlatVO).
+            PutFluent("parentChainBidList", vo.Pids)
+    }
+    if cap(vo.Children) != 0 {
+        var childrenFlatVO = make([]*JSONObject, len(vo.Children))
+        for i, c := range vo.Children {
+            childrenFlatVO[i] = c.ToFlatVO()
+        }
+        attr.PutFluent("children", childrenFlatVO).
+            PutFluent("childrenBidList", vo.Cids)
+    }
+
     return attr
+
 }
 
 type PagableAreaVO struct {

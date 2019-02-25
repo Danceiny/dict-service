@@ -29,7 +29,7 @@ func (impl *IdFirewallServiceImpl) IsBlackId(t DictTypeEnum, id BID) bool {
  */
 func (impl *IdFirewallServiceImpl) BlackingId(t DictTypeEnum, id BID) bool {
     var key string
-    if (CATEGORY == t) {
+    if CATEGORY == t {
         key = "CATEGORY_BID_BLACKLIST_KEY"
     }
     if key != "" {

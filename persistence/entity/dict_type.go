@@ -14,6 +14,7 @@ const (
     CATEGORY
     AREA
     CAR
+    COMMUNITY
 )
 
 func (t DictTypeEnum) GetBidColName() string {
@@ -37,12 +38,16 @@ func (t DictTypeEnum) GetTableName() string {
     }
 }
 
-func (t *DictTypeEnum) UseHashCache() bool {
-    return (*t) == CATEGORY || (*t) == AREA
+func (t DictTypeEnum) UseHashCache() bool {
+    return t == CATEGORY || t == AREA
 }
 
-func (t *DictTypeEnum) String() string {
-    switch *t {
+func (t DictTypeEnum) Ordinal() int {
+    return int(t)
+}
+
+func (t DictTypeEnum) String() string {
+    switch t {
     case CATEGORY:
         return "CATEGORY"
     case AREA:
@@ -61,6 +66,8 @@ func (t DictTypeEnum) InitEmpty() EntityIfc {
         return &AreaEntity{}
     case CAR:
         return &CarEntity{}
+    case COMMUNITY:
+        return &CommunityEntity{}
     }
     return nil
 }

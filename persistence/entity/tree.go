@@ -30,6 +30,7 @@ type TreeEntityIfc interface {
 type TreeEntity struct {
     BaseEntity
     Level       int             `gorm:"column:node_level" json:"level"`
+    Name        string          `gorm:"column:node_name" json:"name"`
     Cids        []BID           `gorm:"-" json:"-"`
     Pids        []BID           `gorm:"-" json:"-"`
     Children    []TreeEntityIfc `gorm:"-" json:"-"`
@@ -99,20 +100,4 @@ func (entity *TreeEntity) GetPids() []BID {
 }
 func (entity *TreeEntity) SetPids(bids []BID) {
     entity.Pids = bids
-}
-
-func (entity *TreeEntity) interfaces2entities(ifcs []TreeEntityIfc) []*TreeEntity {
-    entities := make([]*TreeEntity, len(ifcs))
-    for i, ifc := range ifcs {
-        entities[i] = ifc.(*TreeEntity)
-    }
-    return entities
-}
-
-func (entity *TreeEntity) entities2interfaces(entities []*TreeEntity) []TreeEntityIfc {
-    ifcs := make([]TreeEntityIfc, len(entities))
-    for i, e := range entities {
-        ifcs[i] = e
-    }
-    return ifcs
 }

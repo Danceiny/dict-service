@@ -18,14 +18,13 @@ func (entity *BaseEntity) GetAttr() *fastjson.JSONObject {
     return entity.Attr
 }
 
-func (entity *BaseEntity) SetAttr(bytes []byte) {
+func (entity *BaseEntity) SetAttrFromBytes(bytes []byte) {
     o := fastjson.ParseObjectB(bytes)
     entity.Attr = o
 }
 
 func (entity *BaseEntity) IsEmpty() bool {
-    s := entity.GetBid().String()
-    return s == "0" || s == ""
+    return entity.CreatedTime == 0 && entity.UpdatedTime == 0
 }
 
 func (entity *BaseEntity) GetBid() BID {
@@ -53,7 +52,7 @@ func (entity *BaseEntity) SetUpdatedTime(t int64) {
 type EntityIfc interface {
     GetBid() BID
     GetAttr() *fastjson.JSONObject
-    SetAttr(bytes []byte)
+    SetAttrFromBytes(bytes []byte)
     GetType() DictTypeEnum
     IsEmpty() bool
     GetCreatedTime() int64
@@ -62,4 +61,5 @@ type EntityIfc interface {
     SetDeletedTime(int64)
     GetUpdatedTime() int64
     SetUpdatedTime(int64)
+    ToJSONB() []byte
 }

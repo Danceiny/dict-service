@@ -1,10 +1,12 @@
 package controller
 
 import (
+    "github.com/Danceiny/dict-service/api"
     . "github.com/Danceiny/dict-service/common"
     . "github.com/Danceiny/dict-service/service"
     . "github.com/Danceiny/go.utils"
     "github.com/gin-gonic/gin"
+    "net/http"
     "strconv"
 )
 
@@ -40,12 +42,25 @@ type DictController interface {
 type DictHandler struct {
 }
 
-func (handler *DictHandler) respond(c *gin.Context, vo FlatVO) {
+func (handler *DictHandler) respondToFlat(c *gin.Context, vo FlatVO) {
     if InterfaceHasNilValue(vo) {
         c.JSON(404, Error("Not Found", nil))
     } else {
         c.JSON(200, Success(vo.ToFlatVO()))
     }
+}
+func (handler *DictHandler) respond(c *gin.Context, vo interface{}) {
+    c.JSON(200, Success(vo))
+}
+func (handler *DictHandler) CommonGet(c *gin.Context) {
+    // 处理参数
+    var req api.MultiGetQueryReq
+    if err := c.ShouldBindJSON(&req); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+    // 调用并响应
+    handler.respond(c, CommonServiceImplCpt.MultiGet(&req))
 }
 func (handler *DictHandler) GetArea(c *gin.Context) {
     // 处理参数
@@ -70,7 +85,7 @@ func (handler *DictHandler) GetArea(c *gin.Context) {
         }
     }
     // 调用并响应
-    handler.respond(c, AreaServiceImplCpt.GetArea(INT(id), parentDepth, childrenDepth))
+    handler.respondToFlat(c, AreaServiceImplCpt.GetArea(INT(id), parentDepth, childrenDepth))
 }
 
 //
