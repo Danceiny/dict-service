@@ -7,21 +7,17 @@ import (
 )
 
 type AreaVO struct {
-    Bid            INT         `json:"bid"`
-    Pid            INT         `json:"pid"`
-    Name           string      `json:"name"`
-    EnglishName    string      `json:"englishName"`
-    Level          AreaLevel   `json:"-"`
-    LevelName      string      `json:"levelName"`
-    Code           INT         `json:"areaCode"`
-    Children       []*AreaVO   `json:"children"`
-    Cids           []BID       `json:"childrenBidList"`
-    ParentChain    []*AreaVO   `json:"parentChain"`
-    Pids           []BID       `json:"parentChainBidList"`
-    Brothers       []*AreaVO   `json:"brothers"`
-    IsMunicipality bool        `json:"isMunicipality"`
-    IsCountyCity   bool        `json:"isCountyCity"`
-    Attr           *JSONObject `json:"attr"`
+    TreeVO
+    Bid            INT       `json:"bid"`
+    Pid            INT       `json:"pid"`
+    EnglishName    string    `json:"englishName"`
+    Level          AreaLevel `json:"-"`
+    Code           INT       `json:"areaCode"`
+    Children       []*AreaVO `json:"children"`
+    ParentChain    []*AreaVO `json:"parentChain"`
+    Brothers       []*AreaVO `json:"brothers"`
+    IsMunicipality bool      `json:"isMunicipality"`
+    IsCountyCity   bool      `json:"isCountyCity"`
 }
 
 func (vo *AreaVO) ToFlatVO() *JSONObject {
@@ -38,7 +34,8 @@ func (vo *AreaVO) ToFlatVO() *JSONObject {
         PutFluent("name", vo.Name).
         PutFluent("englishName", vo.EnglishName).
         PutFluent("levelName", vo.Level.String()).
-        PutFluent("areaCode", vo.Code)
+        PutFluent("areaCode", vo.Code).
+        PutFluent("weight", vo.Weight)
 
     if cap(vo.ParentChain) != 0 {
         var parentChainFlatVO = make([]*JSONObject, len(vo.ParentChain))

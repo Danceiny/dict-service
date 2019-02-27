@@ -39,7 +39,7 @@ func (t DictTypeEnum) GetTableName() string {
 }
 
 func (t DictTypeEnum) UseHashCache() bool {
-    return t == CATEGORY || t == AREA
+    return t == AREA || t == CATEGORY
 }
 
 func (t DictTypeEnum) Ordinal() int {

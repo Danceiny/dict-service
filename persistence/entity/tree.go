@@ -38,6 +38,10 @@ type TreeEntity struct {
     ParentChain []TreeEntityIfc `gorm:"-" json:"-"`
     OldLevel    *int            `gorm:"-" json:"-"`
     OldPid      BID             `gorm:"-" json:"-"`
+    Weight      int             `gorm:"column:weight" json:"weight"`
+    // for cache fields (java fastjson/jackson)
+    Bid       interface{} `gorm:"-" json:"bid"`
+    LevelName string      `gorm:"-" json:"levelEnum"`
 }
 
 func (entity *TreeEntity) GetType() DictTypeEnum {

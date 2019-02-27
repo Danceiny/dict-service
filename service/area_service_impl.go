@@ -39,6 +39,7 @@ func (impl *AreaServiceImpl) transferEntity2VO(ptr interface{}, loadBrother bool
     vo.IsCountyCity = entity.IsCountyCity
     vo.Cids = entity.Cids
     vo.Pids = entity.Pids
+    vo.Weight = entity.Weight
     var parentChain = entity.ParentChain
     if cap(parentChain) != 0 {
         var parentChainVos = make([]*AreaVO, len(parentChain))
@@ -59,8 +60,7 @@ func (impl *AreaServiceImpl) transferEntity2VO(ptr interface{}, loadBrother bool
         }
         vo.Children = childrenVos
     }
-    // todo
-    vo.IsMunicipality = entity.GetIsMunicipality()
+    vo.IsMunicipality = entity.IsMunicipality
     return vo
 }
 

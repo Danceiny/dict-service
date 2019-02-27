@@ -46,11 +46,10 @@ func (level AreaLevel) Val() int {
 type AreaEntity struct {
     TreeEntity
     Pid            INT    `gorm:"column:parent_bid" json:"parentBid"`
-    Name           string `gorm:"column:node_name" json:"name"`
     EnglishName    string `gorm:"column:english_name" json:"englishName"`
     Code           INT    `gorm:"column:area_code" json:"areaCode"`
     IsCountyCity   bool   `gorm:"isCountyCity" json:"isCountyCity"`
-    IsMunicipality bool   `gorm:"-" json:"IsMunicipality"`
+    IsMunicipality bool   `gorm:"-" json:"isMunicipality"`
 }
 
 func (AreaEntity) TableName() string {
@@ -81,6 +80,8 @@ func (entity *AreaEntity) GetIsMunicipality() bool {
 }
 
 func (entity *AreaEntity) ToJSONB() []byte {
+    entity.Bid = entity.ID
+    entity.LevelName = AreaLevel(entity.Level).String()
     entity.IsMunicipality = entity.GetIsMunicipality()
     return fastjson.ToJSONB(entity)
 }
