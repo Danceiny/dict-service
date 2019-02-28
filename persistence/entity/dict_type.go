@@ -54,6 +54,8 @@ func (t DictTypeEnum) String() string {
         return "AREA"
     case CAR:
         return "CAR"
+    case COMMUNITY:
+        return "COMMUNITY"
     }
     return ""
 }

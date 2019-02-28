@@ -33,7 +33,7 @@ func (repo *RepositoryServiceImpl) Get(t DictTypeEnum, bid BID, simple bool, wit
 }
 func (repo *RepositoryServiceImpl) loadAttr(t DictTypeEnum, bid BID) (val []byte) {
     rows, _ := repo.DB.Raw(fmt.Sprintf("SELECT attr FROM %s WHERE %s = ?", t.GetTableName(), t.GetBidColName()), bid).Rows()
-    rows.Next()
+    rows.Next() // FIXME: nil issue
     _ = rows.Scan(&val)
     return val
 }
